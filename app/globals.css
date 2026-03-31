@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --primary: 180 100% 42%;        /* #00D4D4 */
+    --primary-muted: 174 85% 38%;   /* #0ABAB5 */
+    --bg-base: 240 33% 7%;          /* #0C0C18 */
+    --bg-card: 240 24% 11%;         /* #161625 */
+    --bg-panel: 240 29% 9%;         /* #111120 */
+    --border: 240 18% 19%;          /* #2A2A3A */
+    --text-primary: 43 28% 90%;     /* #E8E4D9 */
+    --text-secondary: 240 7% 54%;   /* #8A8A9A */
+    --text-dim: 240 8% 37%;         /* #5A5A6A */
+
+    --background: var(--bg-base);
+    --foreground: var(--text-primary);
+    --card: var(--bg-card);
+    --card-foreground: var(--text-primary);
+    --popover: var(--bg-card);
+    --popover-foreground: var(--text-primary);
+    --primary-foreground: 240 33% 7%;
+    --secondary: var(--bg-card);
+    --secondary-foreground: var(--text-primary);
+    --muted: var(--bg-panel);
+    --muted-foreground: var(--text-secondary);
+    --accent: var(--bg-panel);
+    --accent-foreground: var(--text-primary);
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --input: var(--border);
+    --ring: var(--primary);
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-[hsl(var(--border))];
+  }
+  body {
+    @apply bg-[hsl(var(--bg-base))] text-[hsl(var(--text-primary))];
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
