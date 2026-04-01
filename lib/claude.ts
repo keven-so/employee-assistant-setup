@@ -1,9 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { loadContext } from "./context-loader";
 import { tools, executeTool } from "./tool-executor";
+import { PipelineData } from "./pipeline";
 
 export interface PageContext {
-  news?: Array<{ title: string; source: string; url: string; tier: string; published: string; description?: string }>;
+  pipeline?: PipelineData;
   tasks?: string;
   calendar?: string;
 }
@@ -25,19 +26,19 @@ export async function chat(
   const displayCompany = companyName ? ` at ${companyName}` : "";
   const pageSnapshot = buildPageSnapshot(pageContext);
 
-  const systemPrompt = `You are an AI executive assistant for ${employeeName}${displayRole}${displayCompany}. You help them stay on top of their calendar, tasks, and any work-related needs. Be concise, friendly, and action-oriented.
+  const systemPrompt = `You are an AI executive assistant for ${employeeName}${displayRole}${displayCompany}. You help them stay on top of their calendar, tasks, pipeline deals, and any work-related needs. Be concise, friendly, and action-oriented.
 
 When you use tools, report results naturally in your response (e.g., "Done — added that to your Now tasks").
 
 You have access to a persistent memory system. Use save_memory to remember important things the employee tells you (preferences, contacts, project details). Use recall_memory when context might be helpful.
 
+You have access to the CRM pipeline via get_pipeline. Use it when the employee asks about deals, leads, or pipeline status.
+
 Today is ${new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}.
 
 VOICE & STYLE RULES:
-- You CAN see and discuss everything currently on the dashboard — calendar, tasks, and news.
-- When reading news, speak like a broadcaster: natural flowing sentences, NO bullet points or markdown. Example: "In today's top news, Company X raised 75 million dollars for its AI video tool, and the former Apple designer is building a new AI interface. Want me to go deeper on any of these?"
-- Never say you "don't have access" to news — you have that data below.
-- Keep news readbacks to 2–4 sentences, then offer to go deeper.
+- You CAN see and discuss everything currently on the dashboard — calendar, tasks, and pipeline.
+- When discussing pipeline deals, lead with urgency: mention deals closing soonest first, flag any that are overdue or closing this week.
 - Strip ALL markdown (**, ##, -) from spoken responses.
 
 ${pageSnapshot ? `--- LIVE DASHBOARD DATA ---\n${pageSnapshot}\n` : ""}
@@ -110,14 +111,16 @@ function buildPageSnapshot(ctx?: PageContext): string {
   const parts: string[] = [];
   if (ctx.calendar) parts.push(`### Today's Calendar\n${ctx.calendar}`);
   if (ctx.tasks) parts.push(`### Today's Tasks\n${ctx.tasks}`);
-  if (ctx.news && ctx.news.length > 0) {
-    const lines = ctx.news
-      .map((a, i) => {
-        const desc = a.description ? ` — ${a.description}` : "";
-        return `${i + 1}. [${a.tier.toUpperCase()}] "${a.title}"${desc} (${a.source}, ${a.published})`;
+  if (ctx.pipeline && ctx.pipeline.leads.length > 0) {
+    const lines = ctx.pipeline.leads
+      .map((l, i) => {
+        const closeStr = l.expected_close
+          ? new Date(l.expected_close).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+          : "no date";
+        return `${i + 1}. ${l.company} (${l.contact_name}) — $${Number(l.value).toLocaleString()} — Stage: ${l.stage} — Closes: ${closeStr}`;
       })
       .join("\n");
-    parts.push(`### Current News Articles (displayed on dashboard)\n${lines}`);
+    parts.push(`### Pipeline (${ctx.pipeline.stats.activeDeals} active deals, $${Number(ctx.pipeline.stats.totalValue).toLocaleString()} total)\n${lines}`);
   }
   return parts.join("\n\n");
 }

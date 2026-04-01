@@ -2,8 +2,8 @@
 
 import { TopBar } from "@/components/dashboard/TopBar";
 import { CalendarCard } from "@/components/dashboard/CalendarCard";
+import { PipelineCard } from "@/components/dashboard/PipelineCard";
 import { TasksCard } from "@/components/dashboard/TasksCard";
-import { NewsCard } from "@/components/dashboard/NewsCard";
 import { QuickPills } from "@/components/dashboard/QuickPills";
 import { ChatPanel } from "@/components/chat/ChatPanel";
 
@@ -27,11 +27,11 @@ export default function Home() {
 
           <div className="grid grid-cols-2 gap-3 flex-1 min-h-0">
             <CalendarCard />
-            <TasksCard />
+            <PipelineCard />
           </div>
 
           <div className="flex-shrink-0">
-            <NewsCard />
+            <TasksCard />
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { getTasks, addTask, completeTaskByText } from "./tasks";
 import { getTodayEvents } from "./google-calendar";
 import { getServerSupabase } from "./supabase";
+import { getPipeline } from "./pipeline";
 
 export const tools: Anthropic.Messages.Tool[] = [
   {
@@ -71,6 +72,15 @@ export const tools: Anthropic.Messages.Tool[] = [
     },
   },
   {
+    name: "get_pipeline",
+    description: "Get active deals from the CRM pipeline, sorted by soonest expected close date",
+    input_schema: {
+      type: "object" as const,
+      properties: {},
+      required: [],
+    },
+  },
+  {
     name: "draft_email",
     description: "Create a Gmail draft email",
     input_schema: {
@@ -131,6 +141,22 @@ export async function executeTool(name: string, input: Record<string, string>): 
         return `Marked "${input.text}" as complete.`;
       } catch (e) {
         return `Failed to complete task: ${e instanceof Error ? e.message : "unknown error"}`;
+      }
+    }
+
+    case "get_pipeline": {
+      try {
+        const pipeline = await getPipeline();
+        if (pipeline.leads.length === 0) return "No active deals in the pipeline.";
+        const lines = pipeline.leads.map((l) => {
+          const closeStr = l.expected_close
+            ? new Date(l.expected_close).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+            : "no date";
+          return `- ${l.company} (${l.contact_name}) — $${Number(l.value).toLocaleString()} — ${l.stage} — closes ${closeStr}${l.notes ? ` — ${l.notes}` : ""}`;
+        });
+        return `${pipeline.stats.activeDeals} active deals, $${Number(pipeline.stats.totalValue).toLocaleString()} total pipeline:\n${lines.join("\n")}`;
+      } catch {
+        return "Could not load pipeline. Check Supabase configuration.";
       }
     }
 

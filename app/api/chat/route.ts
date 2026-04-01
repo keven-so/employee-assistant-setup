@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { chat, PageContext } from "@/lib/claude";
-import { getNews } from "@/lib/news-fetcher";
+import { getPipeline } from "@/lib/pipeline";
 import Anthropic from "@anthropic-ai/sdk";
 
 export async function POST(req: NextRequest) {
@@ -18,10 +18,10 @@ export async function POST(req: NextRequest) {
     const employeeRole = process.env.EMPLOYEE_ROLE || "";
     const companyName = process.env.COMPANY_NAME || "";
 
-    const [newsResult] = await Promise.allSettled([getNews()]);
+    const [pipelineResult] = await Promise.allSettled([getPipeline()]);
 
     const pageContext: PageContext = {
-      news: newsResult.status === "fulfilled" ? newsResult.value.articles : undefined,
+      pipeline: pipelineResult.status === "fulfilled" ? pipelineResult.value : undefined,
     };
 
     const stream = await chat(

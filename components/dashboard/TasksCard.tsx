@@ -59,11 +59,12 @@ export function TasksCard() {
 
   return (
     <div
-      className="glass-card p-5 flex flex-col overflow-hidden"
-      style={{ animation: "fadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.37s both" }}
+      id="tasks-card"
+      className="glass-card p-5"
+      style={{ animation: "fadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.45s both" }}
     >
       <div className="flex items-center justify-between mb-3.5">
-        <div>
+        <div className="flex items-center gap-3">
           <div className="font-bold text-[14px]" style={{ color: "var(--text-1)" }}>Tasks</div>
           <div className="text-[11px]" style={{ color: "var(--text-2)" }}>
             {stats.done} of {stats.total} done
@@ -84,26 +85,28 @@ export function TasksCard() {
         <p className="text-[12px]" style={{ color: "var(--amber)" }}>{error}</p>
       )}
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex gap-2.5 overflow-x-auto pb-1">
         {nowTasks.map((task, i) => (
           <button
             key={task.id}
             onClick={() => toggleTask(task)}
             disabled={task.done}
-            className="flex items-center gap-2.5 py-2 px-2.5 rounded-[10px] w-full text-left cursor-pointer transition-colors"
+            className="flex items-center gap-2 py-2 px-3 rounded-[10px] cursor-pointer transition-colors flex-shrink-0"
             style={{
+              background: "var(--glass)",
+              border: "1.5px solid var(--border)",
               opacity: 0,
-              animation: `fadeUp 0.35s ease ${0.52 + i * 0.1}s both`,
+              animation: `fadeUp 0.35s ease ${0.6 + i * 0.08}s both`,
             }}
             onMouseEnter={(e) => {
-              if (!task.done) e.currentTarget.style.background = "rgba(255,255,255,0.5)";
+              if (!task.done) e.currentTarget.style.background = "rgba(255,255,255,0.80)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.background = "var(--glass)";
             }}
           >
             <div
-              className="w-[18px] h-[18px] rounded-[6px] flex items-center justify-center flex-shrink-0 text-[11px]"
+              className="w-[16px] h-[16px] rounded-[5px] flex items-center justify-center flex-shrink-0 text-[10px]"
               style={
                 task.done
                   ? {
@@ -117,15 +120,12 @@ export function TasksCard() {
             >
               {task.done && "\u2713"}
             </div>
-            <div className="flex-1 min-w-0">
-              <div
-                className="text-[12.5px] font-semibold truncate"
-                style={task.done ? { color: "var(--text-3)", textDecoration: "line-through" } : {}}
-              >
-                {task.text}
-              </div>
+            <div
+              className="text-[12px] font-semibold whitespace-nowrap"
+              style={task.done ? { color: "var(--text-3)", textDecoration: "line-through" } : {}}
+            >
+              {task.text}
             </div>
-            <span className="text-[11px]" style={{ color: "var(--text-3)" }}>{"\u203A"}</span>
           </button>
         ))}
         {!error && nowTasks.length === 0 && (
