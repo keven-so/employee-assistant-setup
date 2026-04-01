@@ -8,18 +8,29 @@ export function MessageBubble({ role, content, timestamp }: MessageBubbleProps) 
   const isUser = role === "user";
 
   return (
-    <div className={`mb-5 flex flex-col ${isUser ? "items-end" : "items-start"}`}>
+    <div className={`mb-3 flex flex-col ${isUser ? "items-end" : "items-start"}`}>
       <div
-        className={`max-w-[90%] rounded-xl px-5 py-4 text-base leading-relaxed ${
-          isUser
-            ? "bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary-muted))] text-[hsl(var(--bg-base))] font-medium rounded-br-sm"
-            : "bg-[hsl(var(--bg-card))] border border-[hsl(var(--border))] rounded-bl-sm"
+        className={`max-w-[90%] rounded-[14px] px-4 py-3 text-[12px] leading-relaxed ${
+          isUser ? "rounded-br-sm" : "rounded-bl-sm"
         }`}
+        style={
+          isUser
+            ? {
+                background: "linear-gradient(135deg, var(--purple), var(--teal))",
+                color: "white",
+                fontWeight: 500,
+              }
+            : {
+                background: "var(--glass)",
+                border: "1px solid var(--border)",
+                color: "var(--text-1)",
+              }
+        }
       >
         {content}
       </div>
       {timestamp && (
-        <span className="text-xs text-[hsl(var(--text-dim))] mt-1.5">
+        <span className="text-[9px] mt-1" style={{ color: "var(--text-3)" }}>
           {timestamp}
         </span>
       )}

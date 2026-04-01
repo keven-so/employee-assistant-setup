@@ -47,13 +47,16 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
   };
 
   return (
-    <div className="px-6 py-5 border-t border-[hsl(var(--border))]">
+    <div className="px-3 py-3" style={{ borderTop: "1px solid var(--border)" }}>
       <div
-        className={`flex items-center gap-3 bg-[hsl(var(--bg-card))] rounded-xl px-5 py-4 border transition-colors ${
-          isListening
-            ? "border-red-500 shadow-[0_0_0_3px_rgba(239,68,68,0.15)]"
-            : "border-[hsl(var(--border))] focus-within:border-[hsl(var(--primary))]"
-        }`}
+        className="flex items-center gap-2 rounded-[12px] px-3 py-2.5 transition-all"
+        style={{
+          background: "var(--glass-b)",
+          border: isListening
+            ? "1.5px solid var(--red-dot)"
+            : "1.5px solid var(--border)",
+          boxShadow: isListening ? "0 0 0 3px rgba(239,68,68,0.15)" : "none",
+        }}
       >
         {supported && (
           <button
@@ -61,11 +64,11 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
             onClick={handleMicClick}
             disabled={disabled}
             title={isListening ? "Stop recording" : "Speak a message"}
-            className={`text-lg transition-all disabled:opacity-30 ${
-              isListening
-                ? "text-red-500 animate-pulse scale-110"
-                : "text-[hsl(var(--text-dim))] hover:text-[hsl(var(--primary))]"
-            }`}
+            className="text-[14px] transition-all disabled:opacity-30"
+            style={{
+              color: isListening ? "var(--red-dot)" : "var(--text-3)",
+              animation: isListening ? "pulse 1.5s infinite" : "none",
+            }}
           >
             {isListening ? "\uD83D\uDD34" : "\uD83C\uDF99\uFE0F"}
           </button>
@@ -79,21 +82,23 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
           placeholder={isListening ? "Listening\u2026" : "Ask anything\u2026"}
           disabled={disabled}
-          className="flex-1 bg-transparent text-base outline-none placeholder:text-[hsl(var(--text-dim))]"
+          className="flex-1 bg-transparent text-[12px] outline-none"
+          style={{ color: "var(--text-1)" }}
         />
 
         <button
           onClick={() => handleSubmit()}
           disabled={disabled || !value.trim()}
-          className="text-[hsl(var(--primary))] text-xl hover:opacity-80 disabled:opacity-30 transition-opacity"
+          className="text-[16px] transition-opacity disabled:opacity-30"
+          style={{ color: "var(--purple)" }}
         >
-          \u2192
+          {"\u2192"}
         </button>
       </div>
 
       {isListening && (
-        <p className="text-xs text-red-400 mt-2 text-center animate-pulse">
-          \uD83C\uDF99 Listening\u2026 speak now, then pause to send
+        <p className="text-[9px] mt-1.5 text-center" style={{ color: "var(--red-dot)", animation: "pulse 1.5s infinite" }}>
+          {"\uD83C\uDF99"} Listening{"\u2026"} speak now, then pause to send
         </p>
       )}
     </div>

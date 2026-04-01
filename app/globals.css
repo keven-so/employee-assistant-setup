@@ -2,49 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
 @layer base {
   :root {
-    --primary: 180 100% 42%;        /* #00D4D4 */
-    --primary-muted: 174 85% 38%;   /* #0ABAB5 */
-    --bg-base: 240 33% 7%;          /* #0C0C18 */
-    --bg-card: 240 24% 11%;         /* #161625 */
-    --bg-panel: 240 29% 9%;         /* #111120 */
-    --border: 240 18% 19%;          /* #2A2A3A */
-    --text-primary: 43 28% 90%;     /* #E8E4D9 */
-    --text-secondary: 240 7% 54%;   /* #8A8A9A */
-    --text-dim: 240 8% 37%;         /* #5A5A6A */
-
-    --background: var(--bg-base);
-    --foreground: var(--text-primary);
-    --card: var(--bg-card);
-    --card-foreground: var(--text-primary);
-    --popover: var(--bg-card);
-    --popover-foreground: var(--text-primary);
-    --primary-foreground: 240 33% 7%;
-    --secondary: var(--bg-card);
-    --secondary-foreground: var(--text-primary);
-    --muted: var(--bg-panel);
-    --muted-foreground: var(--text-secondary);
-    --accent: var(--bg-panel);
-    --accent-foreground: var(--text-primary);
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --input: var(--border);
-    --ring: var(--primary);
-    --radius: 0.75rem;
+    --bg1: #B8CDE0;
+    --bg2: #D4E5F2;
+    --bg3: #C8DCF0;
+    --glass: rgba(255,255,255,0.60);
+    --glass-b: rgba(255,255,255,0.85);
+    --shadow: 0 8px 32px rgba(80,110,150,0.13);
+    --shadow-lg: 0 16px 48px rgba(80,110,150,0.20);
+    --border: rgba(255,255,255,0.75);
+    --text-1: #1A2130;
+    --text-2: #6B7A94;
+    --text-3: #9BAABF;
+    --purple: #7C3AED;
+    --purple-lt: #EDE9FE;
+    --coral: #F87171;
+    --coral-lt: #FEE2E2;
+    --teal: #0EA5E9;
+    --teal-lt: #E0F2FE;
+    --green: #10B981;
+    --amber: #F59E0B;
+    --red-dot: #EF4444;
+    --radius: 22px;
+    --radius-sm: 14px;
   }
 
-  * {
-    @apply border-[hsl(var(--border))];
-  }
-  body {
-    @apply bg-[hsl(var(--bg-base))] text-[hsl(var(--text-primary))];
-    font-feature-settings: "rlig" 1, "calt" 1;
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: hidden;
+    background: linear-gradient(145deg, var(--bg1) 0%, var(--bg2) 55%, var(--bg3) 100%);
+    color: var(--text-1);
   }
 }
+
+@keyframes fadeUp   { from { opacity:0; transform:translateY(18px) } to { opacity:1; transform:none } }
+@keyframes fadeDown { from { opacity:0; transform:translateY(-14px) } to { opacity:1; transform:none } }
+@keyframes fadeLeft { from { opacity:0; transform:translateX(20px) } to { opacity:1; transform:none } }
+@keyframes scaleIn  { from { opacity:0; transform:scale(0.92) } to { opacity:1; transform:scale(1) } }
+@keyframes shimmer  { 0%{background-position:-200% center} 100%{background-position:200% center} }
+@keyframes spin     { to { transform:rotate(360deg) } }
+@keyframes pulse    { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.45;transform:scale(0.82)} }
+@keyframes bounce   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+@keyframes checkPop {
+  0%   { transform:scale(0); opacity:0 }
+  70%  { transform:scale(1.3) }
+  100% { transform:scale(1); opacity:1 }
+}
+
+.glass-card {
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.glass-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(100,130,170,0.2); border-radius: 3px; }

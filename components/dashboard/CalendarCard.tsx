@@ -10,12 +10,7 @@ interface CalendarEvent {
   calendar: string;
 }
 
-const EVENT_COLORS = [
-  "border-[hsl(var(--primary))]",
-  "border-[hsl(var(--primary-muted))]",
-  "border-amber-500",
-  "border-rose-500",
-];
+const EVENT_COLORS = ["var(--purple)", "var(--teal)", "var(--amber)", "var(--coral)"];
 
 export function CalendarCard() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -51,32 +46,58 @@ export function CalendarCard() {
   };
 
   return (
-    <div className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--bg-card))] p-6">
-      <div className="flex items-center justify-between mb-5">
-        <span className="font-semibold text-base">Today&apos;s Calendar</span>
-        <span className="text-sm text-[hsl(var(--text-dim))]">
-          {events.length} event{events.length !== 1 ? "s" : ""}
-        </span>
+    <div
+      className="glass-card p-5 flex flex-col overflow-hidden"
+      style={{ animation: "fadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.3s both" }}
+    >
+      <div className="flex items-center justify-between mb-3.5">
+        <div>
+          <div className="font-bold text-[14px]" style={{ color: "var(--text-1)" }}>Calendar</div>
+          <div className="text-[11px]" style={{ color: "var(--text-2)" }}>
+            {events.length} event{events.length !== 1 ? "s" : ""} today
+          </div>
+        </div>
+        <a
+          href="https://calendar.google.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[11px] font-medium cursor-pointer"
+          style={{ color: "var(--teal)" }}
+        >
+          Open Calendar →
+        </a>
       </div>
 
       {error && (
-        <p className="text-base text-amber-400">{error}</p>
+        <p className="text-[12px]" style={{ color: "var(--amber)" }}>{error}</p>
       )}
 
       {!error && events.length === 0 && (
-        <p className="text-base text-[hsl(var(--text-dim))]">No events today</p>
+        <p className="text-[12px]" style={{ color: "var(--text-3)" }}>No events today</p>
       )}
 
-      <div className="space-y-3">
+      <div className="flex-1 overflow-y-auto">
         {events.map((event, i) => (
           <div
             key={event.id}
-            className={`border-l-[3px] ${EVENT_COLORS[i % EVENT_COLORS.length]} rounded px-4 py-3 bg-[hsl(var(--bg-base))]/50`}
+            className="flex items-start gap-2.5 py-2 px-2.5 rounded-[10px]"
+            style={{
+              opacity: 0,
+              animation: `fadeUp 0.35s ease ${0.45 + i * 0.1}s both`,
+            }}
           >
-            <div className="text-sm text-[hsl(var(--text-secondary))]">
-              {formatTime(event.start)}
+            <div
+              className="w-[3px] h-[32px] rounded-full flex-shrink-0 mt-0.5"
+              style={{ background: EVENT_COLORS[i % EVENT_COLORS.length] }}
+            />
+            <div className="flex-1 min-w-0">
+              <div className="text-[11px]" style={{ color: "var(--text-3)" }}>
+                {formatTime(event.start)}
+              </div>
+              <div className="text-[12.5px] font-semibold truncate">
+                {event.summary}
+              </div>
             </div>
-            <div className="text-base font-medium">{event.summary}</div>
           </div>
         ))}
       </div>

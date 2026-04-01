@@ -50,7 +50,7 @@ export function TasksCard() {
         setData(await res.json());
       }
     } catch {
-      // Silently fail — task stays unchecked
+      // Silently fail
     }
   };
 
@@ -58,43 +58,79 @@ export function TasksCard() {
   const stats = data?.stats ?? { total: 0, done: 0 };
 
   return (
-    <div className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--bg-card))] p-6">
-      <div className="flex items-center justify-between mb-5">
-        <span className="font-semibold text-base">Today&apos;s Tasks</span>
-        <span className="text-sm text-[hsl(var(--text-dim))]">
-          {stats.done}/{stats.total} done
-        </span>
+    <div
+      className="glass-card p-5 flex flex-col overflow-hidden"
+      style={{ animation: "fadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.37s both" }}
+    >
+      <div className="flex items-center justify-between mb-3.5">
+        <div>
+          <div className="font-bold text-[14px]" style={{ color: "var(--text-1)" }}>Tasks</div>
+          <div className="text-[11px]" style={{ color: "var(--text-2)" }}>
+            {stats.done} of {stats.total} done
+          </div>
+        </div>
+        <a
+          href="https://tasks.google.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[11px] font-medium cursor-pointer"
+          style={{ color: "var(--teal)" }}
+        >
+          Open Tasks →
+        </a>
       </div>
 
       {error && (
-        <p className="text-base text-red-400">{error}</p>
+        <p className="text-[12px]" style={{ color: "var(--amber)" }}>{error}</p>
       )}
 
-      {!error && nowTasks.length === 0 && (
-        <p className="text-base text-[hsl(var(--text-dim))]">No tasks yet</p>
-      )}
-
-      <div className="space-y-1">
-        {nowTasks.map((task) => (
+      <div className="flex-1 overflow-y-auto">
+        {nowTasks.map((task, i) => (
           <button
             key={task.id}
             onClick={() => toggleTask(task)}
-            className="flex items-start gap-3 py-2.5 w-full text-left border-b border-[hsl(var(--border))] last:border-0"
+            disabled={task.done}
+            className="flex items-center gap-2.5 py-2 px-2.5 rounded-[10px] w-full text-left cursor-pointer transition-colors"
+            style={{
+              opacity: 0,
+              animation: `fadeUp 0.35s ease ${0.52 + i * 0.1}s both`,
+            }}
+            onMouseEnter={(e) => {
+              if (!task.done) e.currentTarget.style.background = "rgba(255,255,255,0.5)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+            }}
           >
-            <span className={`mt-0.5 text-lg ${task.done ? "text-[hsl(var(--primary))]" : "text-[hsl(var(--text-dim))]"}`}>
-              {task.done ? "\u2611" : "\u2610"}
-            </span>
-            <span
-              className={`text-base leading-relaxed ${
+            <div
+              className="w-[18px] h-[18px] rounded-[6px] flex items-center justify-center flex-shrink-0 text-[11px]"
+              style={
                 task.done
-                  ? "line-through text-[hsl(var(--text-dim))]"
-                  : "text-[hsl(var(--text-primary))]"
-              }`}
+                  ? {
+                      background: "var(--purple)",
+                      border: "2px solid var(--purple)",
+                      color: "white",
+                      animation: "checkPop 0.3s ease both",
+                    }
+                  : { border: "2px solid #C4CFDF" }
+              }
             >
-              {task.text}
-            </span>
+              {task.done && "\u2713"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div
+                className="text-[12.5px] font-semibold truncate"
+                style={task.done ? { color: "var(--text-3)", textDecoration: "line-through" } : {}}
+              >
+                {task.text}
+              </div>
+            </div>
+            <span className="text-[11px]" style={{ color: "var(--text-3)" }}>{"\u203A"}</span>
           </button>
         ))}
+        {!error && nowTasks.length === 0 && (
+          <p className="text-[12px]" style={{ color: "var(--text-3)" }}>No tasks yet</p>
+        )}
       </div>
     </div>
   );
